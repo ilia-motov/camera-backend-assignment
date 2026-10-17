@@ -13,8 +13,8 @@ public sealed class PostgresCameraRepository(CameraDbContext context) : ICameraR
             throw new ArgumentOutOfRangeException(nameof(limit));
 
         var location = new Point(point.Longitude, point.Latitude) { SRID = 4326 };
-        // A secondary Id ordering in the KNN query can prevent a GiST scan on PostgreSQL 16.
-        // Keep all boundary ties, then resolve them by Id outside the indexed search.
+        // Дополнительная сортировка KNN по Id может помешать использованию GiST в PostgreSQL 16.
+        // Сохраняем все совпадения на границе выборки, затем сортируем их по Id во внешнем запросе.
         return await context.Database.SqlQuery<NearestCamera>($"""
             SELECT nearest.id AS "Id", nearest.name AS "Name",
                    ST_Distance(nearest.location, {location}::geography, false) / 1000 AS "DistanceKm"

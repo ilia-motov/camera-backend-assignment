@@ -1,7 +1,7 @@
--- Explicitly invoked by setup-database.ps1 -Seed5Million; never run at API startup.
+-- Запускается явно через setup-database.ps1 -Seed5Million, а не при старте API.
 \timing on
 BEGIN;
--- Serialize seed attempts and commit the marker together with the inserted rows.
+-- Запускаем заполнение по очереди; отметку о завершении сохраняем вместе с добавленными строками.
 SELECT pg_advisory_xact_lock(150017, 5000000);
 CREATE TABLE IF NOT EXISTS demo_seed_runs (
     name text PRIMARY KEY,
@@ -14,8 +14,8 @@ BEGIN
         RETURN;
     END IF;
 
-    -- Negative IDs avoid the positive identity sequence. Conflicts abort the seed.
-    -- A reproducible grid: 2,000 latitudes x 2,500 longitudes, all active.
+    -- Отрицательные Id не пересекаются с положительной последовательностью. При конфликте заполнение прерывается.
+    -- Воспроизводимая сетка: 2000 широт и 2500 долгот, все камеры активны.
     INSERT INTO cameras (id, name, latitude, longitude, is_active)
     SELECT -n, 'Seed-' || n,
         -89.955 + ((n - 1) / 2500) * 0.09,

@@ -16,7 +16,7 @@ function Invoke-SqlFile([string]$Name) {
     Write-Host "Applying $Name"
     $path = Join-Path $PSScriptRoot $Name
     if ($Local) {
-        # Password comes from the normal psql prompt / password file / PGPASSWORD.
+        # Пароль вводится по запросу psql либо берётся из файла паролей или PGPASSWORD.
         & $PsqlPath -X -h $DatabaseHost -p $Port -U $Username -d $Database -v ON_ERROR_STOP=1 -f $path
     } else {
         Get-Content -LiteralPath $path -Raw | docker compose --project-directory $projectRoot exec -T postgres `

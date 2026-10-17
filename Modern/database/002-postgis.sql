@@ -1,8 +1,8 @@
--- Run after 001-init.sql. PostGIS must be installed on the PostgreSQL server.
+-- Выполнять после 001-init.sql. На сервере PostgreSQL должен быть установлен PostGIS.
 BEGIN;
 CREATE EXTENSION IF NOT EXISTS postgis;
 
--- Existing rows are filled automatically; coordinate updates also update location.
+-- Для существующих строк location заполнится автоматически и будет обновляться при изменении координат.
 ALTER TABLE cameras ADD COLUMN IF NOT EXISTS location geography(Point,4326)
     GENERATED ALWAYS AS (ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography) STORED;
 

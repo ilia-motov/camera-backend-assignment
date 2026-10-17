@@ -1,4 +1,4 @@
--- Same ordering and projection as the repository. Run after setup/seed.
+-- Выбор столбцов и сортировка повторяют запрос репозитория. Выполнять после подготовки и заполнения БД.
 EXPLAIN (ANALYZE, BUFFERS)
 SELECT nearest.id, nearest.name,
        ST_Distance(nearest.location, ST_SetSRID(ST_MakePoint(37.6173, 55.7558), 4326)::geography, false) / 1000 AS distance_km
