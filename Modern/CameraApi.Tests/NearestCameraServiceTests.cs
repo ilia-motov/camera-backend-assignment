@@ -5,36 +5,53 @@ namespace CameraApi.Tests;
 public sealed class NearestCameraServiceTests
 {
     [Fact]
-    public async Task SelectsNearestAndBreaksExactTiesById()
+    public async Task PassesPointLimitAndCancellationToDatabaseSearch()
     {
-        var repository = new StubRepository([
-            new(9, "Far", new GeoPoint(10, 10)),
-            new(3, "Same-3", new GeoPoint(0, 0)),
-            new(1, "Same-1", new GeoPoint(0, 0)),
-            new(2, "Near", new GeoPoint(0, 0.001))
-        ]);
-        var service = new NearestCameraService(repository, new HaversineDistanceCalculator());
-        var result = await service.FindAsync(new GeoPoint(0, 0), 3, default);
-        Assert.Equal(new[] { 1, 3, 2 }, result.Select(camera => camera.Id));
+        var repository = new StubRepository([new(7, "Camera", 1.25)]);
+        var service = new NearestCameraService(repository);
+        var point = new GeoPoint(55.7558, 37.6173);
+        using var cts = new CancellationTokenSource();
+
+        var result = await service.FindAsync(point, 3, cts.Token);
+
+        Assert.Equal(new NearestCamera(7, "Camera", 1.25), Assert.Single(result));
+        Assert.Equal(point, repository.Point);
+        Assert.Equal(3, repository.Limit);
+        Assert.Equal(cts.Token, repository.Token);
+        Assert.Equal(1, repository.Calls);
     }
 
     [Fact]
-    public async Task ReturnsAvailableCamerasWhenFewerThanLimit()
+    public async Task CancelledRequestDoesNotCallRepository()
     {
-        var repository = new StubRepository([new(7, "Camera", new GeoPoint(0, 0))]);
-        var service = new NearestCameraService(repository, new HaversineDistanceCalculator());
-        var result = await service.FindAsync(new GeoPoint(0, 0), 3, default);
-        Assert.Equal(7, Assert.Single(result).Id);
+        var repository = new StubRepository([]);
+        var service = new NearestCameraService(repository);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => service.FindAsync(new GeoPoint(0, 0), 3, cts.Token));
+        Assert.Equal(0, repository.Calls);
     }
 }
 
-internal sealed class StubRepository(IReadOnlyList<Camera> cameras) : ICameraRepository
+internal sealed class StubRepository(IReadOnlyList<NearestCamera> cameras) : ICameraRepository
 {
     public int Calls { get; private set; }
+    public GeoPoint Point { get; private set; }
+    public int Limit { get; private set; }
+    public CancellationToken Token { get; private set; }
 
     public Task<IReadOnlyList<Camera>> GetActiveAsync(CancellationToken cancellationToken)
+        => throw new InvalidOperationException("The endpoint must not load all cameras.");
+
+    public Task<IReadOnlyList<NearestCamera>> GetNearestActiveAsync(
+        GeoPoint point, int limit, CancellationToken cancellationToken)
     {
         Calls++;
+        Point = point;
+        Limit = limit;
+        Token = cancellationToken;
         return Task.FromResult(cameras);
     }
 }

@@ -50,7 +50,11 @@ public sealed class ApiTests
         public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Cancelled { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        public async Task<IReadOnlyList<Camera>> GetActiveAsync(CancellationToken cancellationToken)
+        public Task<IReadOnlyList<Camera>> GetActiveAsync(CancellationToken cancellationToken)
+            => throw new InvalidOperationException("The endpoint must not load all cameras.");
+
+        public async Task<IReadOnlyList<NearestCamera>> GetNearestActiveAsync(
+            GeoPoint point, int limit, CancellationToken cancellationToken)
         {
             Started.SetResult();
             try { await Task.Delay(Timeout.Infinite, cancellationToken); }

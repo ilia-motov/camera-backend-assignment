@@ -14,7 +14,7 @@ builder.Services.AddDbContext<CameraDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("Cameras")
         ?? throw new InvalidOperationException("ConnectionStrings:Cameras is required.");
-    options.UseNpgsql(connectionString, postgres => postgres.CommandTimeout(10));
+    options.UseNpgsql(connectionString, postgres => postgres.UseNetTopologySuite().CommandTimeout(10));
 });
 
 var app = builder.Build();

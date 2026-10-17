@@ -1,3 +1,5 @@
+using NetTopologySuite.Geometries;
+
 namespace CameraApi.Infrastructure;
 
 public sealed class CameraEntity
@@ -7,4 +9,5 @@ public sealed class CameraEntity
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public bool IsActive { get; set; }
+    public Point Location { get; private set; } = null!;
 }
