@@ -9,7 +9,7 @@ Content-Type: application/json
   "limit": 3
 }
 
-### Validation error
+### Ошибка валидации
 POST {{CameraApi_HostAddress}}/api/cameras/nearest
 Content-Type: application/json
 

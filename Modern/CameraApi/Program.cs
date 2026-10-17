@@ -28,5 +28,5 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 app.Run();
 
-// Makes the entry point accessible to WebApplicationFactory integration tests.
+// Делает точку входа доступной для интеграционных тестов через WebApplicationFactory.
 public partial class Program;

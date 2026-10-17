@@ -17,7 +17,7 @@ public sealed class HaversineDistanceCalculator : IDistanceCalculator
             * Math.Cos(to.Latitude * DegreesToRadians)
             * sinLongitude * sinLongitude;
 
-        // Floating-point rounding can put a just outside [0, 1] near antipodes.
+        // Для почти противоположных точек ошибки округления могут вывести a за пределы [0, 1].
         a = Math.Clamp(a, 0, 1);
         return 2 * EarthRadiusKm * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
     }
