@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: cameras
+      POSTGRES_USER: camera_demo
+      POSTGRES_PASSWORD: camera_demo
+    ports:
+      - "127.0.0.1:54329:5432"
+    volumes:
+      - camera-data:/var/lib/postgresql/data
+      - ./Modern/database/001-init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U camera_demo -d cameras"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  camera-data:

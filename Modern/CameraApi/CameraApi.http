@@ -1,0 +1,20 @@
+@CameraApi_HostAddress = http://localhost:5080
+
+POST {{CameraApi_HostAddress}}/api/cameras/nearest
+Content-Type: application/json
+
+{
+  "latitude": 55.7558,
+  "longitude": 37.6173,
+  "limit": 3
+}
+
+### Validation error
+POST {{CameraApi_HostAddress}}/api/cameras/nearest
+Content-Type: application/json
+
+{
+  "latitude": 91,
+  "longitude": 37.6173,
+  "limit": 0
+}
