@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS cameras (
     is_active boolean NOT NULL DEFAULT true
 );
 
--- Demo data, including an inactive camera at the query point and an exact-distance tie.
+-- Примеры данных: неактивная камера в точке запроса и камеры с одинаковым расстоянием до неё.
 INSERT INTO cameras (id, name, latitude, longitude, is_active) VALUES
     (1, 'Center', 55.7558, 37.6173, true),
     (2, 'North', 55.7658, 37.6173, true),
