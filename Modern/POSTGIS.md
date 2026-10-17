@@ -20,6 +20,8 @@ dotnet run --project Modern/CameraApi --launch-profile http
 
 Адреса прежние: API `localhost:5080`, БД `localhost:54329`, база `cameras`, пользователь и пароль `camera_demo`. Compose использует образ с PostGIS и отдельный том `camera-postgis-data`; том `camera-data` из `main` сохраняется. Перед обратным переключением ветки также выполните `docker compose down`.
 
+Swagger: `http://localhost:5080/swagger`. Отладка в Visual Studio и подключение pgAdmin описаны в [README](../README.md#swagger-visual-studio-и-pgadmin). SQL из [explain-nearest.sql](database/explain-nearest.sql) можно выполнить прямо в Query Tool.
+
 Для локального PostgreSQL установите PostGIS, создайте БД и выполните:
 
 ```powershell

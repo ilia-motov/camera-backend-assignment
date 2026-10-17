@@ -43,6 +43,14 @@ dotnet run --project Modern/CameraApi --launch-profile http
 
 Строка подключения указывает на готовую БД; сама она не создаёт базу и таблицы.
 
+## Swagger, Visual Studio и pgAdmin
+
+Swagger доступен в режиме Development на `http://localhost:5080/swagger` в обеих ветках. Раскройте `POST /api/cameras/nearest`, нажмите **Try it out**, заполните JSON и нажмите **Execute**.
+
+Для отладки откройте `CameraBackend.sln` в Visual Studio 2026, назначьте `CameraApi` запускаемым проектом, выберите профиль `http` и нажмите F5. БД должна быть запущена заранее; браузер откроет Swagger. Точки останова можно поставить в `CamerasController`, `NearestCameraService` и `PostgresCameraRepository`.
+
+В установленном на компьютере pgAdmin создайте сервер (**Register → Server**). На вкладке Connection укажите: Host `localhost`, Port `54329`, Maintenance database `cameras`, Username `camera_demo`, Password `camera_demo`. Затем откройте базу `cameras` → **Query Tool** и выполняйте SQL. Настройки одинаковы для обеих веток; подключение ведёт к БД контейнера, запущенного в данный момент.
+
 ## Как работает Modern в main
 
 - Контроллер проверяет обязательные поля: latitude от -90 до 90, longitude от -180 до 180, limit от 1 до 100. При ошибке возвращает 400.
